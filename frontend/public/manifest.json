@@ -1,0 +1,29 @@
+{
+  "short_name": "AgriPal",
+  "name": "AgriPal - AI Farming Assistant",
+  "icons": [
+    {
+      "src": "agripal-favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "agripal-logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "agripal-logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2e7d32",
+  "background_color": "#ffffff",
+  "description": "AI farming assistant for Ghanaian farmers. Crop diagnosis, planting advice & pest control in Twi/Pidgin/English.",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-GH"
+}
