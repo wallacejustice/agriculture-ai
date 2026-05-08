@@ -30,7 +30,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
-  const navigate = useNavigate(); // ✅ IMPORTANT: Use navigate hook
+  const navigate = useNavigate();
   const { login, user, token, error: authError, loading: authLoading } = useAuth();
   
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -60,6 +60,66 @@ const Login = () => {
       ? 'radial-gradient(circle at 10% 20%, rgba(30, 40, 60, 0.2) 0%, transparent 25%), radial-gradient(circle at 90% 80%, rgba(40, 50, 70, 0.15) 0%, transparent 25%)'
       : 'radial-gradient(circle at 10% 20%, rgba(230, 240, 255, 0.15) 0%, transparent 25%), radial-gradient(circle at 90% 80%, rgba(220, 230, 255, 0.1) 0%, transparent 25%)',
     backgroundSize: '100% 100%'
+  }), [darkMode]);
+
+  // ✅ PREMIUM UNIFORM INPUT STYLING (applied to BOTH email & password)
+  const uniformInputStyles = useMemo(() => ({
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 2, // ✅ Slightly more rounded for premium feel
+      minHeight: 56, // ✅ Force uniform height
+      bgcolor: darkMode ? 'rgba(25, 32, 45, 0.7)' : 'rgba(250, 252, 255, 0.9)',
+      transition: 'all 0.2s ease', // ✅ Smooth hover/focus transitions
+      '& fieldset': { 
+        borderColor: darkMode ? 'rgba(80, 100, 130, 0.5)' : 'rgba(140, 160, 190, 0.4)',
+        borderWidth: 1.5,
+        transition: 'border-color 0.2s ease'
+      },
+      '&:hover fieldset': { 
+        borderColor: darkMode ? 'rgba(52, 152, 219, 0.8)' : 'rgba(44, 62, 80, 0.7)',
+        borderWidth: 1.5
+      },
+      '&.Mui-focused fieldset': { 
+        borderColor: darkMode ? '#3498db' : '#2c3e50',
+        borderWidth: 2,
+        boxShadow: darkMode 
+          ? '0 0 0 3px rgba(52, 152, 219, 0.25)' 
+          : '0 0 0 3px rgba(44, 62, 80, 0.15)'
+      }
+    },
+    '& .MuiInputLabel-root': { 
+      color: darkMode ? '#94a3b8' : '#64748b',
+      fontWeight: 500,
+      fontSize: '0.95rem',
+      transition: 'color 0.2s ease'
+    },
+    '& .MuiInputLabel-root.Mui-focused': { 
+      color: darkMode ? '#60a5fa' : '#3b82f6',
+      fontWeight: 600
+    },
+    '& .MuiInputBase-input': { 
+      color: darkMode ? '#f1f5f9' : '#0f172a',
+      py: 1.75, // ✅ Uniform padding
+      px: 1.75,
+      fontWeight: 500,
+      fontSize: '1rem', // ✅ Consistent font size
+      '&::placeholder': {
+        color: darkMode ? 'rgba(148, 163, 184, 0.7)' : 'rgba(100, 116, 139, 0.7)',
+        opacity: 1
+      }
+    },
+    '& .MuiInputAdornment-root': {
+      color: darkMode ? '#64748b' : '#64748b',
+      opacity: 0.9,
+      mr: 0.5,
+      pointerEvents: 'auto' // ✅ Ensure icons are clickable
+    },
+    '& input:-webkit-autofill': {
+      WebkitBoxShadow: darkMode 
+        ? '0 0 0 1000px rgba(25, 32, 45, 0.9) inset !important'
+        : '0 0 0 1000px rgba(250, 252, 255, 0.95) inset !important',
+      WebkitTextFillColor: `${darkMode ? '#e2e8f0' : '#0f172a'} !important`,
+      transition: 'background-color 5000s ease-in-out 0s !important'
+    }
   }), [darkMode]);
 
   useEffect(() => {
@@ -125,7 +185,6 @@ const Login = () => {
       await login(formData);
       setRedirecting(true);
       
-      // ✅ FIX: Direct redirect as fallback (ensures redirect even if useEffect doesn't trigger)
       if (localStorage.getItem('token') && localStorage.getItem('user')) {
         navigate('/dashboard', { replace: true });
       }
@@ -139,6 +198,7 @@ const Login = () => {
 
   return (
     <Box sx={backgroundStyle}>
+      {/* Dark mode toggle - top right */}
       <Box sx={{
         position: 'fixed',
         top: 24,
@@ -302,6 +362,7 @@ const Login = () => {
 
             <form onSubmit={handleSubmit} noValidate autoComplete="off">
               <Grid container spacing={3}>
+                {/* ✅ EMAIL FIELD - Uses uniformInputStyles */}
                 <Grid item xs={12}>
                   <TextField
                     required
@@ -317,55 +378,15 @@ const Login = () => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <AccountCircle sx={{ 
-                            color: darkMode ? '#64748b' : '#64748b', 
-                            fontSize: 21,
-                            opacity: 0.85
-                          }} />
+                          <AccountCircle sx={{ fontSize: 22 }} />
                         </InputAdornment>
                       )
                     }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 1.75,
-                        bgcolor: darkMode ? 'rgba(25, 32, 45, 0.65)' : 'rgba(250, 252, 255, 0.85)',
-                        '& fieldset': { 
-                          borderColor: darkMode ? 'rgba(80, 100, 130, 0.45)' : 'rgba(140, 160, 190, 0.35)',
-                          borderWidth: 1.25
-                        },
-                        '&:hover fieldset': { 
-                          borderColor: darkMode ? 'rgba(52, 152, 219, 0.7)' : 'rgba(44, 62, 80, 0.65)'
-                        },
-                        '&.Mui-focused fieldset': { 
-                          borderColor: darkMode ? '#3498db' : '#2c3e50',
-                          borderWidth: 1.5
-                        }
-                      },
-                      '& .MuiInputLabel-root': { 
-                        color: darkMode ? '#94a3b8' : '#64748b',
-                        fontWeight: 500
-                      },
-                      '& .MuiInputLabel-root.Mui-focused': { 
-                        color: darkMode ? '#60a5fa' : '#3b82f6'
-                      },
-                      '& .MuiInputBase-input': { 
-                        color: darkMode ? '#f1f5f9' : '#0f172a',
-                        py: 1.6,
-                        px: 1.5,
-                        fontWeight: 500,
-                        fontSize: '0.975rem'
-                      },
-                      '& input:-webkit-autofill': {
-                        WebkitBoxShadow: darkMode 
-                          ? '0 0 0 1000px rgba(25, 32, 45, 0.85) inset !important'
-                          : '0 0 0 1000px rgba(250, 252, 255, 0.9) inset !important',
-                        WebkitTextFillColor: `${darkMode ? '#e2e8f0' : '#0f172a'} !important`,
-                        transition: 'background-color 5000s ease-in-out 0s !important'
-                      }
-                    }}
+                    sx={uniformInputStyles}
                   />
                 </Grid>
 
+                {/* ✅ PASSWORD FIELD - Uses EXACT SAME uniformInputStyles */}
                 <Grid item xs={12}>
                   <TextField
                     required
@@ -380,11 +401,7 @@ const Login = () => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Lock sx={{ 
-                            color: darkMode ? '#64748b' : '#64748b', 
-                            fontSize: 20,
-                            opacity: 0.85
-                          }} />
+                          <Lock sx={{ fontSize: 21 }} />
                         </InputAdornment>
                       ),
                       endAdornment: (
@@ -394,7 +411,10 @@ const Login = () => {
                             onClick={() => setShowPassword(!showPassword)}
                             edge="end"
                             sx={{ 
-                              color: darkMode ? '#94a3b8' : '#64748b'
+                              color: darkMode ? '#94a3b8' : '#64748b',
+                              '&:hover': { color: darkMode ? '#60a5fa' : '#3b82f6' },
+                              transition: 'color 0.2s ease',
+                              pointerEvents: 'auto'
                             }}
                           >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -402,37 +422,7 @@ const Login = () => {
                         </InputAdornment>
                       )
                     }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 1.75,
-                        bgcolor: darkMode ? 'rgba(25, 32, 45, 0.65)' : 'rgba(250, 252, 255, 0.85)',
-                        '& fieldset': { 
-                          borderColor: darkMode ? 'rgba(80, 100, 130, 0.45)' : 'rgba(140, 160, 190, 0.35)',
-                          borderWidth: 1.25
-                        },
-                        '&:hover fieldset': { 
-                          borderColor: darkMode ? 'rgba(52, 152, 219, 0.7)' : 'rgba(44, 62, 80, 0.65)'
-                        },
-                        '&.Mui-focused fieldset': { 
-                          borderColor: darkMode ? '#3498db' : '#2c3e50',
-                          borderWidth: 1.5
-                        }
-                      },
-                      '& .MuiInputBase-input': { 
-                        color: darkMode ? '#f1f5f9' : '#0f172a',
-                        py: 1.6,
-                        px: 1.5,
-                        fontWeight: 500,
-                        fontSize: '0.975rem'
-                      },
-                      '& input:-webkit-autofill': {
-                        WebkitBoxShadow: darkMode 
-                          ? '0 0 0 1000px rgba(25, 32, 45, 0.85) inset !important'
-                          : '0 0 0 1000px rgba(250, 252, 255, 0.9) inset !important',
-                        WebkitTextFillColor: `${darkMode ? '#e2e8f0' : '#0f172a'} !important`,
-                        transition: 'background-color 5000s ease-in-out 0s !important'
-                      }
-                    }}
+                    sx={uniformInputStyles}
                   />
                 </Grid>
 
@@ -469,7 +459,6 @@ const Login = () => {
                       }
                     />
                     
-                    {/* ✅ CRITICAL FIX: CHANGE HREF="#" TO NAVIGATION */}
                     <MuiLink 
                       onClick={(e) => { 
                         e.preventDefault(); 
@@ -485,7 +474,9 @@ const Login = () => {
                         '&:hover': { 
                           textDecoration: 'underline',
                           color: darkMode ? '#3b82f6' : '#2563eb'
-                        }
+                        },
+                        transition: 'color 0.2s ease',
+                        pointerEvents: 'auto'
                       }}
                     >
                       Forgot password?
@@ -529,7 +520,8 @@ const Login = () => {
                       color: '#ffffff',
                       boxShadow: darkMode
                         ? '0 4px 14px rgba(0, 15, 45, 0.35)'
-                        : '0 4px 14px rgba(20, 40, 90, 0.22)'
+                        : '0 4px 14px rgba(20, 40, 90, 0.22)',
+                      pointerEvents: 'auto'
                     }}
                   >
                     {(authLoading || isSubmitting || redirecting) ? (
@@ -571,7 +563,7 @@ const Login = () => {
               >
                 New to AgriPal?{' '}
                 <MuiLink 
-                  href="/register" 
+                  onClick={(e) => { e.preventDefault(); navigate('/register'); }}
                   variant="body1"
                   sx={{ 
                     color: darkMode ? '#60a5fa' : '#2563eb',
@@ -581,9 +573,10 @@ const Login = () => {
                     '&:hover': { 
                       textDecoration: 'underline',
                       color: darkMode ? '#3b82f6' : '#1e40af'
-                    }
+                    },
+                    transition: 'color 0.2s ease',
+                    pointerEvents: 'auto'
                   }}
-                  onClick={(e) => { e.preventDefault(); navigate('/register'); }}
                 >
                   Create your account
                 </MuiLink>
