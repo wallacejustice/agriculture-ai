@@ -195,7 +195,12 @@ const Chat = () => {
           return [...withoutOptimistic, ...newMessages];
         });
         const aiMsg = newMessages.find(msg => msg.role === 'ai');
-        if (aiMsg?.content?.trim() && isVoiceEnabled) voice.speak(aiMsg.content, aiMsg.language || userLanguage);
+        
+        // ✅ UPGRADE: Add natural "thinking" delay before voice speaks (matches localhost pacing)
+        if (aiMsg?.content?.trim() && isVoiceEnabled) {
+          await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second natural pause
+          voice.speak(aiMsg.content, aiMsg.language || userLanguage);
+        }
       }
     } catch (err) {
       setError('Failed to send message');
